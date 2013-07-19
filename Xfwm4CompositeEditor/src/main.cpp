@@ -23,9 +23,25 @@ void shutdown(GtkWidget* widget,gpointer data)
 	gtk_main_quit();
 }
 
-gboolean shadowOpacity(GtkWidget *widget,GdkEvent *event,gpointer user_data)
+gboolean shadowOpacity(GtkWidget *widget,gpointer user_data)
 {
-	printf("XXX\n");
+	double	value;
+	int val;
+
+	if(strcmp(G_OBJECT_TYPE_NAME(widget),"GtkSpinButton")==0)
+		{
+			val=gtk_spin_button_get_value_as_int((GtkSpinButton*)widget);
+		}
+	else
+		{
+			val=(int)gtk_range_get_value((GtkRange*)widget);
+		}
+	//value=gtk_range_get_value((GtkRange*)widget);
+	//gtk_range_set_value((GtkRange*)user_data,value);
+	//printf("XXX%f\n",value);
+	printf("ZZ%s\n",G_OBJECT_TYPE_NAME(widget));
+	//printf("ZZ%i\n",G_OBJECT_TYPE(widget));
+	printf("%i\n",val);
 	return(false);
 }
 
@@ -60,8 +76,10 @@ int main(int argc,char **argv)
 	gtk_box_pack_start(GTK_BOX(hbox),spin,false,false,4);
 	range=gtk_hscale_new_with_range(0,200,1);
 	gtk_scale_set_draw_value ((GtkScale*)range,false);
+	gtk_scale_set_digits((GtkScale*)range,0);
 
-	g_signal_connect(G_OBJECT(panelSizeWidget),"button-release-event",G_CALLBACK(shadowOpacity),(gpointer)spin);
+	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(shadowOpacity),(gpointer)spin);
+	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(shadowOpacity),(gpointer)range);
 
 	gtk_box_pack_start(GTK_BOX(hbox),range,true,true,4);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
