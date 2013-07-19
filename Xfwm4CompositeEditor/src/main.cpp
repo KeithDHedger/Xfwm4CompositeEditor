@@ -23,6 +23,13 @@ void shutdown(GtkWidget* widget,gpointer data)
 	gtk_main_quit();
 }
 
+gboolean lastev(GtkWidget *widget,GdkEvent  *event,gpointer   user_data)
+{
+printf("XXX\n");
+return(false);
+
+}
+
 gboolean shadowOpacity(GtkWidget *widget,gpointer user_data)
 {
 	double	value;
@@ -43,7 +50,7 @@ gboolean shadowOpacity(GtkWidget *widget,gpointer user_data)
 	//printf("XXX%f\n",value);
 //	printf("ZZ%s\n",G_OBJECT_TYPE_NAME(widget));
 	//printf("ZZ%i\n",G_OBJECT_TYPE(widget));
-//	printf("%i\n",val);
+	printf("%i\n",val);
 	return(false);
 }
 
@@ -82,6 +89,9 @@ int main(int argc,char **argv)
 
 	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(shadowOpacity),(gpointer)spin);
 	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(shadowOpacity),(gpointer)range);
+
+	g_signal_connect(G_OBJECT(range),"button-release-event",G_CALLBACK(lastev),(gpointer)spin);
+	g_signal_connect(G_OBJECT(spin),"button-release-event",G_CALLBACK(lastev),(gpointer)range);
 
 	gtk_box_pack_start(GTK_BOX(hbox),range,true,true,4);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
