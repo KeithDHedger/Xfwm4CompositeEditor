@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([Xfwm4CompositeEditor],[0.0],[PROJ],[Xfwm4CompositeEditor])
+AC_INIT([Xfwm4CompositeEditor],[0.0.1],[PROJ],[Xfwm4CompositeEditor])
 
 AC_CONFIG_HEADER([config.h])
 AC_PROG_CXX
@@ -26,5 +26,5 @@ PKG_CHECK_MODULES(GTK, $GTK_MODULES)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-AC_OUTPUT(Makefile Xfwm4CompositeEditor/app/Makefile Xfwm4CompositeEditor/debug/Makefile)
+AC_OUTPUT(Makefile Xfwm4CompositeEditor/app/Makefile)
 

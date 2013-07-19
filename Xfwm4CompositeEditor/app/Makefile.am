@@ -1,3 +1,5 @@
+TRANSFORMNAME = xfwm4-composite-editor
+NAME = Xfwm4-Composite-Editor
 
 include ../flagsandlibs
 include ../sources
