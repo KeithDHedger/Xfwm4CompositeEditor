@@ -31,17 +31,19 @@ gboolean shadowOpacity(GtkWidget *widget,gpointer user_data)
 	if(strcmp(G_OBJECT_TYPE_NAME(widget),"GtkSpinButton")==0)
 		{
 			val=gtk_spin_button_get_value_as_int((GtkSpinButton*)widget);
+			gtk_range_set_value((GtkRange*)user_data,val);
 		}
 	else
 		{
 			val=(int)gtk_range_get_value((GtkRange*)widget);
+			gtk_spin_button_set_value((GtkSpinButton*)user_data,val);
 		}
 	//value=gtk_range_get_value((GtkRange*)widget);
 	//gtk_range_set_value((GtkRange*)user_data,value);
 	//printf("XXX%f\n",value);
-	printf("ZZ%s\n",G_OBJECT_TYPE_NAME(widget));
+//	printf("ZZ%s\n",G_OBJECT_TYPE_NAME(widget));
 	//printf("ZZ%i\n",G_OBJECT_TYPE(widget));
-	printf("%i\n",val);
+//	printf("%i\n",val);
 	return(false);
 }
 
