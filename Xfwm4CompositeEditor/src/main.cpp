@@ -17,6 +17,8 @@
 #endif
 
 #define WINDOWNAME "Xfwm4-Composite-Editor"
+#define SUBTITLE "Xfwm4 compositor settings"
+
 #define INT 1
 #define BOOL 2
 
@@ -122,7 +124,7 @@ void buttonCallback(GtkToggleButton* widget,gpointer user_data)
 	switch((long)user_data)
 		{
 			case 1:
-				system("xfwm4 --replace");
+				system("xfwm4 --replace &");
 				break;
 			case 3:
 				shutdown(NULL,NULL);
@@ -234,6 +236,16 @@ void resetControls(GtkWidget *widget,gpointer data)
 {
 	gpointer	ptr=NULL;
 
+	if(strcmp(G_OBJECT_TYPE_NAME(widget),"GtkCheckButton")==0)
+		{
+			ptr=g_object_get_data(G_OBJECT(widget),"my-range-value-reset");
+			if(ptr!=NULL)
+				{
+					gtk_toggle_button_set_active((GtkToggleButton*)widget,*((bool*)ptr));
+					return;
+				}
+		}
+
 	if(GTK_IS_CONTAINER(widget))
 		gtk_container_foreach((GtkContainer*)widget,resetControls,NULL);
 	else
@@ -246,6 +258,7 @@ void resetControls(GtkWidget *widget,gpointer data)
 
 					if(strcmp(G_OBJECT_TYPE_NAME(widget),"GtkHScale")==0)
 						gtk_range_set_value((GtkRange*)widget,*((int*)ptr));
+
 				}
 		}
 }
@@ -383,13 +396,16 @@ int main(int argc,char **argv)
 		gtk_toggle_button_set_active((GtkToggleButton*)button,composite);
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)1);
+		g_object_set_data(G_OBJECT(button),"my-range-value-reset",&compositeOrig);
 //dock shad
 		button=gtk_check_button_new_with_label("Dock Shadow");
 		gtk_toggle_button_set_active((GtkToggleButton*)button,dockShadow);
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)2);
+		g_object_set_data(G_OBJECT(button),"my-range-value-reset",&dockShadowOrig);
 //frame shad
 		button=gtk_check_button_new_with_label("Frame Shadow");
+		g_object_set_data(G_OBJECT(button),"my-range-value-reset",&frameShadowOrig);
 		gtk_toggle_button_set_active((GtkToggleButton*)button,frameShadow);
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)3);
@@ -398,6 +414,7 @@ int main(int argc,char **argv)
 		gtk_toggle_button_set_active((GtkToggleButton*)button,popupShadow);
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)4);
+		g_object_set_data(G_OBJECT(button),"my-range-value-reset",&popupShadowOrig);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
