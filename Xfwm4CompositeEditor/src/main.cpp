@@ -21,6 +21,9 @@
 #define BOOL 2
 
 #define COMPOSITE "/general/use_compositing"
+#define DOCKSHADOW "/general/show_dock_shadow"
+#define FRAMESHADOW "/general/show_frame_shadow"
+#define POPUPSHADOW "/general/show_popup_shadow"
 
 GtkWidget*	window=NULL;
 int			shadowOpacity=100;
@@ -115,12 +118,15 @@ void checkCallback(GtkToggleButton* widget,gpointer user_data)
 				break;
 			case 2:
 				dockShadow=gtk_toggle_button_get_active(widget);
+				setValue(DOCKSHADOW,BOOL,(void*)dockShadow);
 				break;
 			case 3:
 				frameShadow=gtk_toggle_button_get_active(widget);
+				setValue(FRAMESHADOW,BOOL,(void*)frameShadow);
 				break;
 			case 4:
 				popupShadow=gtk_toggle_button_get_active(widget);
+				setValue(POPUPSHADOW,BOOL,(void*)popupShadow);
 				break;
 		}
 }
@@ -172,6 +178,9 @@ GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data)
 void init(void)
 {
 	getValue(COMPOSITE,BOOL,(void*)&composite);
+	getValue(DOCKSHADOW,BOOL,(void*)&dockShadow);
+	getValue(FRAMESHADOW,BOOL,(void*)&frameShadow);
+	getValue(POPUPSHADOW,BOOL,(void*)&popupShadow);
 }
 
 int main(int argc,char **argv)
@@ -250,14 +259,17 @@ int main(int argc,char **argv)
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)1);
 //dock shad
 		button=gtk_check_button_new_with_label("Dock Shadow");
+		gtk_toggle_button_set_active((GtkToggleButton*)button,dockShadow);
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)2);
 //frame shad
 		button=gtk_check_button_new_with_label("Frame Shadow");
+		gtk_toggle_button_set_active((GtkToggleButton*)button,frameShadow);
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)3);
 //popup shad
 		button=gtk_check_button_new_with_label("Pop-Up Shadow");
+		gtk_toggle_button_set_active((GtkToggleButton*)button,popupShadow);
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)4);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
