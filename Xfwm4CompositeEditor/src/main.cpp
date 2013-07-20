@@ -27,6 +27,10 @@ int			inactiveOpacity;
 int			frameOpacity;
 int			resizeOpacity;
 int			popupOpacity;
+bool		composite;
+bool		dockShadow;
+bool		frameShadow;
+bool		popupShadow;
 
 void shutdown(GtkWidget* widget,gpointer data)
 {
@@ -93,6 +97,7 @@ int main(int argc,char **argv)
 {
 	GtkWidget*	hbox;
 	GtkWidget*	vbox;
+	GtkWidget*	button;
 
 	gtk_init(&argc,&argv);
 
@@ -153,6 +158,11 @@ int main(int argc,char **argv)
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
+	hbox=gtk_hbox_new(false,0);
+	button=gtk_check_button_new_with_label("Composite");
+	gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
 
 	gtk_widget_show_all(window);
