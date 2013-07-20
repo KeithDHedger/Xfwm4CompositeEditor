@@ -16,7 +16,10 @@
 
 #define WINDOWNAME "Xfwm4-Composite-Editor"
 
-GtkWidget *window = NULL;
+GtkWidget*	window=NULL;
+int			opacity=100;
+int			deltaX=0;
+int			deltaY=0;
 
 void shutdown(GtkWidget* widget,gpointer data)
 {
@@ -25,15 +28,14 @@ void shutdown(GtkWidget* widget,gpointer data)
 
 gboolean lastev(GtkWidget *widget,GdkEvent  *event,gpointer   user_data)
 {
-printf("XXX\n");
-return(false);
-
+	printf("XXX\n");
+	return(false);
 }
 
-gboolean shadowOpacity(GtkWidget *widget,gpointer user_data)
+void rangeCallback(GtkWidget *widget,gpointer user_data)
 {
-	double	value;
 	int val;
+	gpointer toval;
 
 	if(strcmp(G_OBJECT_TYPE_NAME(widget),"GtkSpinButton")==0)
 		{
@@ -45,13 +47,37 @@ gboolean shadowOpacity(GtkWidget *widget,gpointer user_data)
 			val=(int)gtk_range_get_value((GtkRange*)widget);
 			gtk_spin_button_set_value((GtkSpinButton*)user_data,val);
 		}
-	//value=gtk_range_get_value((GtkRange*)widget);
-	//gtk_range_set_value((GtkRange*)user_data,value);
-	//printf("XXX%f\n",value);
-//	printf("ZZ%s\n",G_OBJECT_TYPE_NAME(widget));
-	//printf("ZZ%i\n",G_OBJECT_TYPE(widget));
-	printf("%i\n",val);
-	return(false);
+
+	toval=g_object_get_data(G_OBJECT(widget),"my-range-value");
+	*((int*)toval)=val;
+	printf("val=%i\n",val);
+	printf("opacity=%i\n",opacity);
+	printf("xOffset=%i\n",deltaX);
+	printf("yOffset=%i\n",deltaY);
+}
+
+GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data)
+{
+	GtkWidget*	hbox;
+	GtkWidget*	range;
+	GtkWidget*	spin;
+
+	hbox=gtk_hbox_new(false,0);
+	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new(labletext),false,false,4);
+	spin=gtk_spin_button_new_with_range(low,high,1); 
+	gtk_box_pack_start(GTK_BOX(hbox),spin,false,false,4);
+	range=gtk_hscale_new_with_range(low,high,1);
+	gtk_scale_set_draw_value ((GtkScale*)range,false);
+	gtk_scale_set_digits((GtkScale*)range,0);
+
+	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
+	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
+	g_object_set_data(G_OBJECT(range),"my-range-value",data);
+	g_object_set_data(G_OBJECT(spin),"my-range-value",data);
+
+	gtk_box_pack_start(GTK_BOX(hbox),range,true,true,4);
+
+	return(hbox);
 }
 
 int main(int argc,char **argv)
@@ -87,13 +113,33 @@ int main(int argc,char **argv)
 	gtk_scale_set_draw_value ((GtkScale*)range,false);
 	gtk_scale_set_digits((GtkScale*)range,0);
 
-	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(shadowOpacity),(gpointer)spin);
-	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(shadowOpacity),(gpointer)range);
-
-	g_signal_connect(G_OBJECT(range),"button-release-event",G_CALLBACK(lastev),(gpointer)spin);
-	g_signal_connect(G_OBJECT(spin),"button-release-event",G_CALLBACK(lastev),(gpointer)range);
+	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
+	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
+	g_object_set_data(G_OBJECT(range),"my-range-value",(gpointer)&opacity);
+	g_object_set_data(G_OBJECT(spin),"my-range-value",(gpointer)&opacity);
 
 	gtk_box_pack_start(GTK_BOX(hbox),range,true,true,4);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+
+//delta x
+	hbox=gtk_hbox_new(false,0);
+	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new("Delta X:\t\t\t"),false,false,4);
+	spin=gtk_spin_button_new_with_range(-64,64,1); 
+	gtk_box_pack_start(GTK_BOX(hbox),spin,false,false,4);
+	range=gtk_hscale_new_with_range(-64,64,1);
+	gtk_scale_set_draw_value ((GtkScale*)range,false);
+	gtk_scale_set_digits((GtkScale*)range,0);
+
+	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
+	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
+	g_object_set_data(G_OBJECT(range),"my-range-value",(gpointer)&deltaX);
+	g_object_set_data(G_OBJECT(spin),"my-range-value",(gpointer)&deltaX);
+
+	gtk_box_pack_start(GTK_BOX(hbox),range,true,true,4);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+
+//delta y
+	hbox=makeRange("Delta Y:\t\t\t",-64,64,&deltaY);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_widget_show_all(window);
