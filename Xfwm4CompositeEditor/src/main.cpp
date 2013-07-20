@@ -197,11 +197,6 @@ void rangeCallback(GtkWidget *widget,gpointer user_data)
 	*((int*)toval)=val;
 }
 
-void testShow(GtkWidget *widget,gpointer   user_data)
-{
-printf("XXXX\n");
-}
-
 GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data,gpointer resetdata)
 {
 	GtkWidget*	hbox;
@@ -218,15 +213,12 @@ GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data,gpoint
 	gtk_scale_set_draw_value ((GtkScale*)range,false);
 	gtk_scale_set_digits((GtkScale*)range,0);
 
-	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
-	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
 	g_signal_connect(G_OBJECT(range),"button-release-event",G_CALLBACK(buttonUp),NULL);
 	g_signal_connect(G_OBJECT(spin),"button-release-event",G_CALLBACK(buttonUp),NULL);
 	g_signal_connect(G_OBJECT(spin),"key-release-event",G_CALLBACK(buttonUp),NULL);
-
-
-	//g_signal_connect(G_OBJECT(range),"window-state-event",G_CALLBACK(testShow),range);
-
+	g_signal_connect(G_OBJECT(range),"key-release-event",G_CALLBACK(buttonUp),NULL);
+	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
+	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
 
 	g_object_set_data(G_OBJECT(range),"my-range-value",data);
 	g_object_set_data(G_OBJECT(spin),"my-range-value",data);
@@ -311,7 +303,6 @@ void init(void)
 	frameShadowOrig=frameShadow;
 	popupShadowOrig=popupShadow;
 }
-
 
 int main(int argc,char **argv)
 {
