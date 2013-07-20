@@ -26,15 +26,25 @@
 #define POPUPSHADOW "/general/show_popup_shadow"
 
 #define SHADOWOPACITY "/general/shadow_opacity"
-MOVE_OPSTART="$(xfconf-query -c xfwm4 -p /general/move_opacity)"
-DELTA_X_START="$(xfconf-query -c xfwm4 -p /general/shadow_delta_x)"
+#define MOVEOPACITY "/general/move_opacity"
+#define RESIZEOPACITY "/general/resize_opacity"
+#define POPUPOPACITY "/general/popup_opacity"
+#define INACTIVEOPACITY "/general/inactive_opacity"
+#define FRAMEOPACITY "/general/frame_opacity"
+
+#define DELTAX "/general/shadow_delta_x"
+#define DELTAY "/general/shadow_delta_y"
+#define DELTAH "/general/shadow_delta_height"
+#define DELTAW "/general/shadow_delta_width"
+
+#define SLEEP 100000
 
 GtkWidget*	window=NULL;
-int			shadowOpacity=100;
-int			deltaX=0;
-int			deltaY=0;
-int			deltaW=0;
-int			deltaH=0;
+int			shadowOpacity;
+int			deltaX;
+int			deltaY;
+int			deltaW;
+int			deltaH;
 int			moveOpacity;
 int			inactiveOpacity;
 int			frameOpacity;
@@ -45,15 +55,10 @@ bool		dockShadow;
 bool		frameShadow;
 bool		popupShadow;
 
+
 void shutdown(GtkWidget* widget,gpointer data)
 {
 	gtk_main_quit();
-}
-
-gboolean lastev(GtkWidget *widget,GdkEvent *event,gpointer user_data)
-{
-	printf("XXX\n");
-	return(false);
 }
 
 void setValue(const char* property,int type,void* data)
@@ -135,6 +140,30 @@ void checkCallback(GtkToggleButton* widget,gpointer user_data)
 		}
 }
 
+void setData(void)
+{
+	setValue(SHADOWOPACITY,INT,(void*)(long)shadowOpacity);
+	setValue(MOVEOPACITY,INT,(void*)(long)moveOpacity);
+	setValue(RESIZEOPACITY,INT,(void*)(long)resizeOpacity);
+	setValue(POPUPOPACITY,INT,(void*)(long)popupOpacity);
+	setValue(FRAMEOPACITY,INT,(void*)(long)frameOpacity);
+
+	setValue(DELTAX,INT,(void*)(long)deltaX);
+	setValue(DELTAY,INT,(void*)(long)deltaY);
+	setValue(DELTAH,INT,(void*)(long)deltaH);
+	setValue(DELTAW,INT,(void*)(long)deltaW);
+}
+
+gboolean buttonUp(GtkWidget *widget,GdkEvent *event,gpointer user_data)
+{
+	setValue(INACTIVEOPACITY,INT,(void*)(long)(inactiveOpacity-1));
+	setData();
+	usleep(SLEEP);
+	setValue(INACTIVEOPACITY,INT,(void*)(long)inactiveOpacity);
+
+	return(false);
+}
+
 void rangeCallback(GtkWidget *widget,gpointer user_data)
 {
 	int val;
@@ -163,14 +192,20 @@ GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data)
 
 	hbox=gtk_hbox_new(false,0);
 	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new(labletext),false,false,4);
-	spin=gtk_spin_button_new_with_range(low,high,1); 
+	spin=gtk_spin_button_new_with_range(low,high,1);
+	gtk_spin_button_set_value((GtkSpinButton*)spin,*(int*)data);
 	gtk_box_pack_start(GTK_BOX(hbox),spin,false,false,4);
 	range=gtk_hscale_new_with_range(low,high,1);
+	gtk_range_set_value((GtkRange*)range,*(int*)data);
 	gtk_scale_set_draw_value ((GtkScale*)range,false);
 	gtk_scale_set_digits((GtkScale*)range,0);
 
 	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
 	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
+	g_signal_connect(G_OBJECT(range),"button-release-event",G_CALLBACK(buttonUp),NULL);
+	g_signal_connect(G_OBJECT(spin),"button-release-event",G_CALLBACK(buttonUp),NULL);
+	g_signal_connect(G_OBJECT(spin),"key-release-event",G_CALLBACK(buttonUp),NULL);
+
 	g_object_set_data(G_OBJECT(range),"my-range-value",data);
 	g_object_set_data(G_OBJECT(spin),"my-range-value",data);
 
@@ -186,8 +221,17 @@ void init(void)
 	getValue(FRAMESHADOW,BOOL,(void*)&frameShadow);
 	getValue(POPUPSHADOW,BOOL,(void*)&popupShadow);
 
-	getValue(POPUPSHADOW,BOOL,(void*)&popupShadow);
+	getValue(SHADOWOPACITY,INT,(void*)&shadowOpacity);
+	getValue(MOVEOPACITY,INT,(void*)&moveOpacity);
+	getValue(RESIZEOPACITY,INT,(void*)&resizeOpacity);
+	getValue(POPUPOPACITY,INT,(void*)&popupOpacity);
+	getValue(INACTIVEOPACITY,INT,(void*)&inactiveOpacity);
+	getValue(FRAMEOPACITY,INT,(void*)&frameOpacity);
 
+	getValue(DELTAX,INT,(void*)&deltaX);
+	getValue(DELTAY,INT,(void*)&deltaY);
+	getValue(DELTAH,INT,(void*)&deltaH);
+	getValue(DELTAW,INT,(void*)&deltaW);
 }
 
 int main(int argc,char **argv)
@@ -289,7 +333,7 @@ int main(int argc,char **argv)
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(buttonCallback),(gpointer)1);
 //defaults
-		button=gtk_button_new_with_label("Defaults");
+		button=gtk_button_new_with_label("Reset");
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(buttonCallback),(gpointer)2);
 //quit
