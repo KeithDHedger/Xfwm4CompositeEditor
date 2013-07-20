@@ -1,6 +1,6 @@
 
 SUBDIRS = Xfwm4CompositeEditor/app
-TRANSFORMNAME = Xfwm4CompositeEditor/app/xfwm4-composite-editor
+TRANSFORMNAME = Xfwm4CompositeEditor/app/xfce4-composite-editor
 
 remake:
 	$(shell ./remakesourcelist)
@@ -10,3 +10,4 @@ all-local:
 
 clean-local:
 	rm $(TRANSFORMNAME)
+	

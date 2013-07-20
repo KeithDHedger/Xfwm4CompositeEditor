@@ -2,9 +2,9 @@
 [Desktop Entry]
 Version=1.0
 Encoding=UTF-8
-Name=Xfwm4CompositeEditor
-Comment=
+Name=Xfce4-Composite-Editor
+Comment=Xfce4 Composite Options Editor
 Terminal=false
 Type=Application
-Categories=Utility;
-Name[en_US]=Xfwm4CompositeEditor
+Categories=Gnome;GTK;;Settings;DesktopSettings;X-XFCE;X-XFCE-SettingsDialog;
+Icon=xfce4-settings
