@@ -259,7 +259,7 @@ int main(int argc,char **argv)
 	g_signal_connect(G_OBJECT(window),"delete-event",G_CALLBACK(shutdown),NULL);
 	gtk_window_set_icon_name((GtkWindow*)window,"preferences-desktop-theme");
 
-	gtk_box_pack_start(GTK_BOX(vbox),gtk_label_new("Requires WM restart"),false,false,8);
+//	gtk_box_pack_start(GTK_BOX(vbox),gtk_label_new("Requires WM restart"),false,false,8);
 
 //shadaow opac
 	hbox=makeRange("Shadow Opacity:\t",0,200,&shadowOpacity);
@@ -281,7 +281,7 @@ int main(int argc,char **argv)
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
-	gtk_box_pack_start(GTK_BOX(vbox),gtk_label_new("Live Update"),false,false,8);
+//	gtk_box_pack_start(GTK_BOX(vbox),gtk_label_new("Live Update"),false,false,8);
 
 //move opac
 	hbox=makeRange("Move Opacity:\t\t",0,100,&moveOpacity);
