@@ -230,12 +230,12 @@ GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data,gpoint
 	return(hbox);
 }
 
-void resetSliders(GtkWidget *widget,gpointer data)
+void resetControls(GtkWidget *widget,gpointer data)
 {
 	gpointer	ptr=NULL;
 
 	if(GTK_IS_CONTAINER(widget))
-		gtk_container_foreach((GtkContainer*)widget,resetSliders,NULL);
+		gtk_container_foreach((GtkContainer*)widget,resetControls,NULL);
 	else
 		{
 			ptr=g_object_get_data(G_OBJECT(widget),"my-range-value-reset");
@@ -263,9 +263,14 @@ void resetData(void)
 	setValue(DELTAH,INT,(void*)(long)deltaHOrig);
 	setValue(DELTAW,INT,(void*)(long)deltaWOrig);
 
+	setValue(COMPOSITE,BOOL,(void*)compositeOrig);
+	setValue(DOCKSHADOW,BOOL,(void*)dockShadowOrig);
+	setValue(FRAMESHADOW,BOOL,(void*)frameShadowOrig);
+	setValue(POPUPSHADOW,BOOL,(void*)popupShadowOrig);
+
 	setValue(INACTIVEOPACITY,INT,(void*)(long)(inactiveOpacityOrig-1));
 	usleep(SLEEP);
-	gtk_container_foreach((GtkContainer*)window,resetSliders,NULL);
+	gtk_container_foreach((GtkContainer*)window,resetControls,NULL);
 	setValue(INACTIVEOPACITY,INT,(void*)(long)inactiveOpacityOrig);
 }
 
