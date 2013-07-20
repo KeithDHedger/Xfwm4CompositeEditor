@@ -17,9 +17,16 @@
 #define WINDOWNAME "Xfwm4-Composite-Editor"
 
 GtkWidget*	window=NULL;
-int			opacity=100;
+int			shadowOpacity=100;
 int			deltaX=0;
 int			deltaY=0;
+int			deltaW=0;
+int			deltaH=0;
+int			moveOpacity;
+int			inactiveOpacity;
+int			frameOpacity;
+int			resizeOpacity;
+int			popupOpacity;
 
 void shutdown(GtkWidget* widget,gpointer data)
 {
@@ -51,9 +58,11 @@ void rangeCallback(GtkWidget *widget,gpointer user_data)
 	toval=g_object_get_data(G_OBJECT(widget),"my-range-value");
 	*((int*)toval)=val;
 	printf("val=%i\n",val);
-	printf("opacity=%i\n",opacity);
+	printf("opacity=%i\n",shadowOpacity);
 	printf("xOffset=%i\n",deltaX);
 	printf("yOffset=%i\n",deltaY);
+	printf("deltaW=%i\n",deltaW);
+	printf("deltaH=%i\n",deltaH);
 }
 
 GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data)
@@ -82,12 +91,10 @@ GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data)
 
 int main(int argc,char **argv)
 {
-	gtk_init(&argc,&argv);
-
-	GtkWidget*	vbox;
 	GtkWidget*	hbox;
-	GtkWidget*	range;
-	GtkWidget*	spin;
+	GtkWidget*	vbox;
+
+	gtk_init(&argc,&argv);
 
 #ifdef GOT_LIBXFCEUI
 			window=xfce_titled_dialog_new();
@@ -104,43 +111,49 @@ int main(int argc,char **argv)
 	g_signal_connect(G_OBJECT(window),"delete-event",G_CALLBACK(shutdown),NULL);
 	gtk_window_set_icon_name((GtkWindow*)window,"preferences-desktop-theme");
 
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_label_new("Requires WM restart"),false,false,8);
+
 //shadaow opac
-	hbox=gtk_hbox_new(false,0);
-	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new("Shadow Opacity:\t"),false,false,4);
-	spin=gtk_spin_button_new_with_range(0,200,1); 
-	gtk_box_pack_start(GTK_BOX(hbox),spin,false,false,4);
-	range=gtk_hscale_new_with_range(0,200,1);
-	gtk_scale_set_draw_value ((GtkScale*)range,false);
-	gtk_scale_set_digits((GtkScale*)range,0);
-
-	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
-	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
-	g_object_set_data(G_OBJECT(range),"my-range-value",(gpointer)&opacity);
-	g_object_set_data(G_OBJECT(spin),"my-range-value",(gpointer)&opacity);
-
-	gtk_box_pack_start(GTK_BOX(hbox),range,true,true,4);
+	hbox=makeRange("Shadow Opacity:\t",0,200,&shadowOpacity);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 //delta x
-	hbox=gtk_hbox_new(false,0);
-	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new("Delta X:\t\t\t"),false,false,4);
-	spin=gtk_spin_button_new_with_range(-64,64,1); 
-	gtk_box_pack_start(GTK_BOX(hbox),spin,false,false,4);
-	range=gtk_hscale_new_with_range(-64,64,1);
-	gtk_scale_set_draw_value ((GtkScale*)range,false);
-	gtk_scale_set_digits((GtkScale*)range,0);
-
-	g_signal_connect(G_OBJECT(range),"value-changed",G_CALLBACK(rangeCallback),(gpointer)spin);
-	g_signal_connect(G_OBJECT(spin),"value-changed",G_CALLBACK(rangeCallback),(gpointer)range);
-	g_object_set_data(G_OBJECT(range),"my-range-value",(gpointer)&deltaX);
-	g_object_set_data(G_OBJECT(spin),"my-range-value",(gpointer)&deltaX);
-
-	gtk_box_pack_start(GTK_BOX(hbox),range,true,true,4);
+	hbox=makeRange("Delta X:\t\t\t",-64,64,&deltaX);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 //delta y
 	hbox=makeRange("Delta Y:\t\t\t",-64,64,&deltaY);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+
+//delta w
+	hbox=makeRange("Delta Width:\t\t",-64,64,&deltaW);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+//delta h
+	hbox=makeRange("Delta Height:\t\t",-64,64,&deltaH);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_label_new("Live Update"),false,false,8);
+
+//move opac
+	hbox=makeRange("Move Opacity:\t\t",0,100,&moveOpacity);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+
+//inactive opac
+	hbox=makeRange("Inactive Opacity:\t",0,100,&inactiveOpacity);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+//frame opac
+	hbox=makeRange("Frame Opacity:\t",0,100,&frameOpacity);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+//resize opac
+	hbox=makeRange("Resize Opacity:\t",0,100,&resizeOpacity);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+//popup opac
+	hbox=makeRange("Pop-up Opacity:\t",0,100,&popupOpacity);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
+
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
+	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
 
 	gtk_widget_show_all(window);
 	gtk_main();
