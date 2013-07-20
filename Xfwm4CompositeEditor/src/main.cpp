@@ -335,7 +335,7 @@ int main(int argc,char **argv)
 #ifdef GOT_LIBXFCEUI
 			window=xfce_titled_dialog_new();
 			gtk_window_set_title((GtkWindow*)window,WINDOWNAME);
-			xfce_titled_dialog_set_subtitle((XfceTitledDialog*)window,WINDOWNAME);
+			xfce_titled_dialog_set_subtitle((XfceTitledDialog*)window,SUBTITLE);
 			vbox=gtk_dialog_get_content_area((GtkDialog *)window);
 #else
 			window=gtk_window_new(GTK_WINDOW_TOPLEVEL);
