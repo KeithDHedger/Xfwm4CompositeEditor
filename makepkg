@@ -3,13 +3,12 @@
 #©keithhedger Wed 22 May 19:55:26 BST 2013 kdhedger68713@gmail.com
 
 VERSION=$(head ./configure.ac|grep AC_INIT|awk -F [ '{print $3}'|awk -F ] '{print $1}')
-OLDNAME=Xfce4-Composite-Editor
 
 svn commit -m ""
 cd /tmp
 svn co file:///media/LinuxData/Development/SVN/Xfwm4CompositeEditor
 find Xfwm4CompositeEditor -name ".svn" -exec rm -r '{}' \; || true
 rm /tmp/Xfwm4CompositeEditor/makepkg
-mv /tmp/Xfwm4CompositeEditor /tmp/${OLDNAME}-${VERSION}
-tar -czvf ${OLDNAME}-${VERSION}.tar.gz ${OLDNAME}-${VERSION}
-rm -r /tmp/${OLDNAME}-${VERSION}
+mv /tmp/Xfwm4CompositeEditor /tmp/Xfwm4CompositeEditor-${VERSION}
+tar -czvf Xfwm4CompositeEditor-${VERSION}.tar.gz Xfwm4CompositeEditor-${VERSION}
+rm -r /tmp/Xfwm4CompositeEditor-${VERSION}
