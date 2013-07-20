@@ -25,6 +25,10 @@
 #define FRAMESHADOW "/general/show_frame_shadow"
 #define POPUPSHADOW "/general/show_popup_shadow"
 
+#define SHADOWOPACITY "/general/shadow_opacity"
+MOVE_OPSTART="$(xfconf-query -c xfwm4 -p /general/move_opacity)"
+DELTA_X_START="$(xfconf-query -c xfwm4 -p /general/shadow_delta_x)"
+
 GtkWidget*	window=NULL;
 int			shadowOpacity=100;
 int			deltaX=0;
@@ -181,6 +185,9 @@ void init(void)
 	getValue(DOCKSHADOW,BOOL,(void*)&dockShadow);
 	getValue(FRAMESHADOW,BOOL,(void*)&frameShadow);
 	getValue(POPUPSHADOW,BOOL,(void*)&popupShadow);
+
+	getValue(POPUPSHADOW,BOOL,(void*)&popupShadow);
+
 }
 
 int main(int argc,char **argv)
