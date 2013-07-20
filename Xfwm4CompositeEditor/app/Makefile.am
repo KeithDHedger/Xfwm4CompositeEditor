@@ -14,17 +14,12 @@ bin_PROGRAMS = xfwm4compositeeditor
 
 install-exec-hook:
 	mkdir -p $(DESTDIR)${prefix}/share/applications
-# $(DESTDIR)${prefix}/share/pixmaps
 	mv $(DESTDIR)${bindir}/xfwm4compositeeditor $(DESTDIR)${bindir}/$(TRANSFORMNAME)
 
 	cp ../resources/pixmaps/$(NAME).desktop $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
-#	cp ../resources/pixmaps/$(NAME).png $(DESTDIR)${prefix}/share/pixmaps/
-
-#	echo Icon=${prefix}/share/pixmaps/Xfwm4CompositeEditor.png >> $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
 	echo Exec=${bindir}/$(APPNAME) >> $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
 
 uninstall-hook:
 	rm -f $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
-#	rm -f $(DESTDIR)${prefix}/share/pixmaps/$(NAME).png
 	rm -f $(DESTDIR)${bindir}/$(APPNAME)
 

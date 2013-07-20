@@ -19,6 +19,9 @@
 #define WINDOWNAME "Xfwm4-Composite-Editor"
 #define SUBTITLE "Xfwm4 compositor settings"
 
+#define MYEMAIL "kdhedger68713@gmail.com"
+#define MYWEBSITE "http://keithhedger.hostingsiteforfree.com"
+
 #define INT 1
 #define BOOL 2
 
@@ -322,6 +325,16 @@ void init(void)
 	popupShadowOrig=popupShadow;
 }
 
+void doAbout(void)
+{
+	const char*	authors[]={"K.D.Hedger <"MYEMAIL">\n",MYWEBSITE,NULL};
+	const char	copyright[] ="Copyright \xc2\xa9 2012-2013 K.D.Hedger";
+	const char*	aboutboxstring="A config editor for the Xfwm4 compositor";
+
+	gtk_show_about_dialog(NULL,"authors",authors,"comments",aboutboxstring,"copyright",copyright,"version",VERSION,"website",MYWEBSITE,"program-name","Xfce4 Composite Editor","logo-icon-name","xfce4-settings",NULL); 
+
+}
+
 int main(int argc,char **argv)
 {
 	GtkWidget*	hbox;
@@ -420,6 +433,11 @@ int main(int argc,char **argv)
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
 
 	hbox=gtk_hbox_new(true,0);
+//about
+		button=gtk_button_new_from_stock(GTK_STOCK_ABOUT);
+		g_signal_connect_after(G_OBJECT(button),"clicked",G_CALLBACK(doAbout),NULL);
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+
 //restart
 		button=gtk_button_new_with_label("Restart WM");
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
