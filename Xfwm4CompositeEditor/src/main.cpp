@@ -331,7 +331,7 @@ void doAbout(void)
 	const char	copyright[] ="Copyright \xc2\xa9 2012-2013 K.D.Hedger";
 	const char*	aboutboxstring="A config editor for the Xfwm4 compositor";
 
-	gtk_show_about_dialog(NULL,"authors",authors,"comments",aboutboxstring,"copyright",copyright,"version",VERSION,"website",MYWEBSITE,"program-name","Xfce4 Composite Editor","logo-icon-name","xfce4-settings",NULL); 
+	gtk_show_about_dialog(NULL,"authors",authors,"comments",aboutboxstring,"copyright",copyright,"version",VERSION,"website",MYWEBSITE,"program-name","Xfce4 Composite Editor","logo-icon-name","Xfwm4CompositeEditor",NULL); 
 
 }
 
