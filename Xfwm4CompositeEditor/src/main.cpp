@@ -8,6 +8,8 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <xfconf/xfconf.h>
+
 #include "config.h"
 
 #ifdef GOT_LIBXFCEUI
@@ -15,6 +17,10 @@
 #endif
 
 #define WINDOWNAME "Xfwm4-Composite-Editor"
+#define INT 1
+#define BOOL 2
+
+#define COMPOSITE "/general/use_compositing"
 
 GtkWidget*	window=NULL;
 int			shadowOpacity=100;
@@ -37,10 +43,86 @@ void shutdown(GtkWidget* widget,gpointer data)
 	gtk_main_quit();
 }
 
-gboolean lastev(GtkWidget *widget,GdkEvent  *event,gpointer   user_data)
+gboolean lastev(GtkWidget *widget,GdkEvent *event,gpointer user_data)
 {
 	printf("XXX\n");
 	return(false);
+}
+
+void setValue(const char* property,int type,void* data)
+{
+	XfconfChannel*	channelptr=xfconf_channel_get("xfwm4");
+
+	switch(type)
+		{
+			case INT:
+				xfconf_channel_set_int(channelptr,property,(int)(long)data);
+				break;
+
+			case BOOL:
+				xfconf_channel_set_bool(channelptr,property,(bool)data);
+				break;
+		}
+}
+
+void getValue(const char* property,int type,void* ptr)
+{
+	int		intdata;
+	bool	booldata;
+
+
+	XfconfChannel*	channelptr=xfconf_channel_get("xfwm4");
+
+	switch(type)
+		{
+			case INT:
+				intdata=xfconf_channel_get_int(channelptr,property,-1000);
+				if(intdata!=-1)
+					*(int*)ptr=intdata;
+				break;
+
+			case BOOL:
+				booldata=xfconf_channel_get_bool(channelptr,property,-1000);
+				if(booldata!=-1)
+					*(bool*)ptr=booldata;
+				break;
+		}
+}
+
+void buttonCallback(GtkToggleButton* widget,gpointer user_data)
+{
+	switch((long)user_data)
+		{
+			case 1:
+				
+				break;
+			case 2:
+				
+				break;
+			case 3:
+				shutdown(NULL,NULL);
+				break;
+		}
+}
+
+void checkCallback(GtkToggleButton* widget,gpointer user_data)
+{
+	switch((long)user_data)
+		{
+			case 1:
+				composite=gtk_toggle_button_get_active(widget);
+				setValue(COMPOSITE,BOOL,(void*)composite);
+				break;
+			case 2:
+				dockShadow=gtk_toggle_button_get_active(widget);
+				break;
+			case 3:
+				frameShadow=gtk_toggle_button_get_active(widget);
+				break;
+			case 4:
+				popupShadow=gtk_toggle_button_get_active(widget);
+				break;
+		}
 }
 
 void rangeCallback(GtkWidget *widget,gpointer user_data)
@@ -61,12 +143,6 @@ void rangeCallback(GtkWidget *widget,gpointer user_data)
 
 	toval=g_object_get_data(G_OBJECT(widget),"my-range-value");
 	*((int*)toval)=val;
-	printf("val=%i\n",val);
-	printf("opacity=%i\n",shadowOpacity);
-	printf("xOffset=%i\n",deltaX);
-	printf("yOffset=%i\n",deltaY);
-	printf("deltaW=%i\n",deltaW);
-	printf("deltaH=%i\n",deltaH);
 }
 
 GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data)
@@ -93,6 +169,11 @@ GtkWidget* makeRange(const char* labletext,int low,int high,gpointer data)
 	return(hbox);
 }
 
+void init(void)
+{
+	getValue(COMPOSITE,BOOL,(void*)&composite);
+}
+
 int main(int argc,char **argv)
 {
 	GtkWidget*	hbox;
@@ -100,6 +181,8 @@ int main(int argc,char **argv)
 	GtkWidget*	button;
 
 	gtk_init(&argc,&argv);
+	xfconf_init(NULL);
+	init();
 
 #ifdef GOT_LIBXFCEUI
 			window=xfce_titled_dialog_new();
@@ -158,12 +241,43 @@ int main(int argc,char **argv)
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
+
 	hbox=gtk_hbox_new(false,0);
-	button=gtk_check_button_new_with_label("Composite");
-	gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+//composite
+		button=gtk_check_button_new_with_label("Composite");
+		gtk_toggle_button_set_active((GtkToggleButton*)button,composite);
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)1);
+//dock shad
+		button=gtk_check_button_new_with_label("Dock Shadow");
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)2);
+//frame shad
+		button=gtk_check_button_new_with_label("Frame Shadow");
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)3);
+//popup shad
+		button=gtk_check_button_new_with_label("Pop-Up Shadow");
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)4);
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
+
+	hbox=gtk_hbox_new(true,0);
+//restart
+		button=gtk_button_new_with_label("Restart WM");
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(buttonCallback),(gpointer)1);
+//defaults
+		button=gtk_button_new_with_label("Defaults");
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(buttonCallback),(gpointer)2);
+//quit
+		button=gtk_button_new_from_stock(GTK_STOCK_QUIT);
+		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
+		g_signal_connect(G_OBJECT(button),"clicked",G_CALLBACK(buttonCallback),(gpointer)3);
+	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_widget_show_all(window);
 	gtk_main();
