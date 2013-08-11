@@ -327,7 +327,7 @@ void init(void)
 
 void doAbout(void)
 {
-	const char*	authors[]={"K.D.Hedger <"MYEMAIL">\n",MYWEBSITE,NULL};
+	const char*	authors[]={"K.D.Hedger <"MYEMAIL">\n",MYWEBSITE,"\nMore by the same author\n","Xfce4-Composite-Editor\nhttp://gtk-apps.org/content/show.php/Xfce4-Composite-Editor?content=149523\n","KKEdit\nhttp://gtk-apps.org/content/show.php?content=158161\n","Manpage Editor\nhttp://gtk-apps.org/content/show.php?content=160219\n","GtkSu\nhttp://gtk-apps.org/content/show.php?content=158974",NULL};
 	const char	copyright[] ="Copyright \xc2\xa9 2012-2013 K.D.Hedger";
 	const char*	aboutboxstring="A config editor for the Xfwm4 compositor";
 
