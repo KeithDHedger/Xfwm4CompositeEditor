@@ -12,6 +12,9 @@ xfwm4compositeeditor_CXXFLAGS = -O3 -export-dynamic
 
 bin_PROGRAMS = xfwm4compositeeditor
 
+docfilesdir = $(pkgdatadir)/docs
+docfiles_DATA = ../resources/docs/*
+
 install-exec-hook:
 	mkdir -p $(DESTDIR)${prefix}/share/applications $(DESTDIR)${prefix}/share/pixmaps
 	mv $(DESTDIR)${bindir}/xfwm4compositeeditor $(DESTDIR)${bindir}/$(TRANSFORMNAME)
