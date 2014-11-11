@@ -29,7 +29,6 @@
 #define DOCKSHADOW "/general/show_dock_shadow"
 #define FRAMESHADOW "/general/show_frame_shadow"
 #define POPUPSHADOW "/general/show_popup_shadow"
-#define SYNCTOVBLANK "/general/sync_to_vblank"
 
 #define SHADOWOPACITY "/general/shadow_opacity"
 #define MOVEOPACITY "/general/move_opacity"
@@ -61,7 +60,6 @@ bool		composite;
 bool		dockShadow;
 bool		frameShadow;
 bool		popupShadow;
-bool		syncToVBlank;
 
 int			shadowOpacityOrig;
 int			deltaXOrig;
@@ -77,7 +75,6 @@ bool		compositeOrig;
 bool		dockShadowOrig;
 bool		frameShadowOrig;
 bool		popupShadowOrig;
-bool		syncToVBlankOrig;
 
 
 void shutdown(GtkWidget* widget,gpointer data)
@@ -119,7 +116,7 @@ void getValue(const char* property,int type,void* ptr)
 
 			case BOOL:
 				booldata=xfconf_channel_get_bool(channelptr,property,-1000);
-				if(booldata!=-1000)
+				if(booldata!=-1)
 					*(bool*)ptr=booldata;
 				break;
 		}
@@ -158,11 +155,7 @@ void checkCallback(GtkToggleButton* widget,gpointer user_data)
 				popupShadow=gtk_toggle_button_get_active(widget);
 				setValue(POPUPSHADOW,BOOL,(void*)popupShadow);
 				break;
-			case 5:
-				syncToVBlank=gtk_toggle_button_get_active(widget);
-				setValue(SYNCTOVBLANK,BOOL,(void*)syncToVBlank);
-				break;
-	}
+		}
 }
 
 void setData(void)
@@ -290,7 +283,6 @@ void resetData(void)
 	setValue(DOCKSHADOW,BOOL,(void*)dockShadowOrig);
 	setValue(FRAMESHADOW,BOOL,(void*)frameShadowOrig);
 	setValue(POPUPSHADOW,BOOL,(void*)popupShadowOrig);
-	setValue(SYNCTOVBLANK,BOOL,(void*)syncToVBlankOrig);
 
 	setValue(INACTIVEOPACITY,INT,(void*)(long)(inactiveOpacityOrig-1));
 	usleep(SLEEP);
@@ -304,7 +296,6 @@ void init(void)
 	getValue(DOCKSHADOW,BOOL,(void*)&dockShadow);
 	getValue(FRAMESHADOW,BOOL,(void*)&frameShadow);
 	getValue(POPUPSHADOW,BOOL,(void*)&popupShadow);
-	getValue(SYNCTOVBLANK,BOOL,(void*)&syncToVBlank);
 
 	getValue(SHADOWOPACITY,INT,(void*)&shadowOpacity);
 	getValue(MOVEOPACITY,INT,(void*)&moveOpacity);
@@ -332,7 +323,6 @@ void init(void)
 	dockShadowOrig=dockShadow;
 	frameShadowOrig=frameShadow;
 	popupShadowOrig=popupShadow;
-	syncToVBlankOrig=syncToVBlank;
 }
 
 void doAbout(void)
@@ -441,13 +431,6 @@ int main(int argc,char **argv)
 		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
 		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)4);
 		g_object_set_data(G_OBJECT(button),"my-range-value-reset",&popupShadowOrig);
-//vblank
-		button=gtk_check_button_new_with_label("Sync to VBlank");
-		gtk_toggle_button_set_active((GtkToggleButton*)button,syncToVBlank);
-		gtk_box_pack_start(GTK_BOX(hbox),button,false,false,4);
-		g_signal_connect(G_OBJECT(button),"toggled",G_CALLBACK(checkCallback),(gpointer)5);
-//		g_object_set_data(G_OBJECT(button),"my-range-value-reset",&syncToVBlankOrig);
-
 	gtk_box_pack_start(GTK_BOX(vbox),hbox,false,false,4);
 
 	gtk_box_pack_start(GTK_BOX(vbox),gtk_hseparator_new(),false,false,0);
