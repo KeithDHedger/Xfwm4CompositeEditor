@@ -1,6 +1,6 @@
 TRANSFORMNAME = xfce4-composite-editor
 APPNAME = xfce4-composite-editor
-NAME=Xfwm4CompositeEditor
+NAME = Xfwm4CompositeEditor
 
 include ../flagsandlibs
 include ../sources
@@ -21,8 +21,6 @@ install-exec-hook:
 
 	cp ../resources/pixmaps/$(NAME).desktop $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
 	cp ../resources/pixmaps/$(NAME).png $(DESTDIR)${prefix}/share/pixmaps
-	echo Exec=${bindir}/$(APPNAME) >> $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
-	echo Icon=$(DESTDIR)${prefix}/share/pixmaps/$(NAME).png >> $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
 
 uninstall-hook:
 	rm -f $(DESTDIR)${prefix}/share/applications/$(APPNAME).desktop
