@@ -11,6 +11,7 @@
 #include <xfconf/xfconf.h>
 
 #include "config.h"
+#include "internet.h"
 
 #ifdef GOT_LIBXFCEUI
 #include <libxfce4ui/libxfce4ui.h>
@@ -18,9 +19,6 @@
 
 #define WINDOWNAME "Xfwm4-Composite-Editor"
 #define SUBTITLE "Xfwm4 compositor settings"
-
-#define MYEMAIL "kdhedger68713@gmail.com"
-#define MYWEBSITE "http://keithhedger.hostingsiteforfree.com"
 
 #define INT 1
 #define BOOL 2
@@ -327,14 +325,14 @@ void init(void)
 
 void doAbout(void)
 {
-	const char*	authors[]={"K.D.Hedger <"MYEMAIL">\n",MYWEBSITE,"\nMore by the same author\n","Xfce-Theme-Manager\nhttp://xfce-look.org/content/show.php?content=149647\n","KKEdit\nhttp://gtk-apps.org/content/show.php?content=158161\n","Manpage Editor\nhttp://gtk-apps.org/content/show.php?content=160219\n","GtkSu\nhttp://gtk-apps.org/content/show.php?content=158974",NULL};
-	const char	copyright[] ="Copyright \xc2\xa9 2012-2013 K.D.Hedger";
+//	const char*	authors[]={"K.D.Hedger <"MYEMAIL">\n",MYWEBSITE,"\nMore by the same author\n","Xfce-Theme-Manager\nhttp://xfce-look.org/content/show.php?content=149647\n","KKEdit\nhttp://gtk-apps.org/content/show.php?content=158161\n","Manpage Editor\nhttp://gtk-apps.org/content/show.php?content=160219\n","GtkSu\nhttp://gtk-apps.org/content/show.php?content=158974",NULL};
+	const char	copyright[]=COPYRITE;
 	const char*	aboutboxstring="A config editor for the Xfwm4 compositor";
 	char*		licence;
 
 	g_file_get_contents(DATADIR"/docs/gpl-3.0.txt",&licence,NULL,NULL);
 
-	gtk_show_about_dialog(NULL,"authors",authors,"comments",aboutboxstring,"copyright",copyright,"version",VERSION,"website",MYWEBSITE,"program-name","Xfce4 Composite Editor","logo-icon-name","Xfwm4CompositeEditor","license",licence,NULL); 
+	gtk_show_about_dialog(NULL,"authors",authors,"comments",aboutboxstring,"copyright",copyright,"version",VERSION,"website",COMPMANAGER,"website-label","Xfce4 Composite Editor","program-name","Xfce4 Composite Editor","logo-icon-name","Xfwm4CompositeEditor","license",licence,NULL); 
 
 }
 
