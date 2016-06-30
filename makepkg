@@ -11,12 +11,9 @@ find Xfwm4CompositeEditor -name ".svn" -exec rm -rf '{}' \; || true
 rm /tmp/Xfwm4CompositeEditor/makepkg
 mv /tmp/Xfwm4CompositeEditor /tmp/Xfwm4CompositeEditor-${VERSION}
 cd /tmp/Xfwm4CompositeEditor-${VERSION}
-./remakesourcelist
-aclocal
-autoheader
-touch NEWS README AUTHORS ChangeLog
-automake --add-missing --copy
-autoconf
+./autogen.sh --prefix=/usr
+make clean
+make distclean
 cd ..
 tar -czvf Xfwm4CompositeEditor-${VERSION}.tar.gz Xfwm4CompositeEditor-${VERSION}
 rm -r /tmp/Xfwm4CompositeEditor-${VERSION}
