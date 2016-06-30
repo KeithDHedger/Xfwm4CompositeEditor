@@ -1,6 +1,6 @@
 #
 #
-AC_INIT([Xfwm4CompositeEditor],[0.2.1],[PROJ],[Xfwm4CompositeEditor])
+AC_INIT([Xfwm4CompositeEditor],[0.2.2],[PROJ],[Xfwm4CompositeEditor])
 
 AC_CONFIG_HEADER([config.h])
 AC_PROG_CXX
