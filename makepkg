@@ -2,6 +2,28 @@
 
 #©keithhedger Wed 22 May 19:55:26 BST 2013 kdhedger68713@gmail.com
 
+#aclocal.m4
+#autogen.sh
+#compile
+#configure
+#COPYING
+#INSTALL
+#Makefile.am
+#makepkg
+#NEWS
+#remakesourcelist
+#Xfwm4CompositeEditor/
+#AUTHORS
+#ChangeLog
+#config.h.in
+#configure.ac
+#depcomp*
+#.gitignore
+#install-sh
+#Makefile.in
+#missing
+#README
+
 VERSION=$(head ./configure.ac|grep AC_INIT|awk -F [ '{print $3}'|awk -F ] '{print $1}')
 
 svn commit -m ""

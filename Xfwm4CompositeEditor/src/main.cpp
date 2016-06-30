@@ -107,15 +107,13 @@ void getValue(const char* property,int type,void* ptr)
 	switch(type)
 		{
 			case INT:
-				intdata=xfconf_channel_get_int(channelptr,property,-1000);
-				if(intdata!=-1)
-					*(int*)ptr=intdata;
+				intdata=xfconf_channel_get_int(channelptr,property,0);
+				*(int*)ptr=intdata;
 				break;
 
 			case BOOL:
-				booldata=xfconf_channel_get_bool(channelptr,property,-1000);
-				if(booldata!=-1)
-					*(bool*)ptr=booldata;
+				booldata=xfconf_channel_get_bool(channelptr,property,false);
+				*(bool*)ptr=booldata;
 				break;
 		}
 }
