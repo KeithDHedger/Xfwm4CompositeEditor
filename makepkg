@@ -12,8 +12,9 @@ rm /tmp/Xfwm4CompositeEditor/makepkg
 mv /tmp/Xfwm4CompositeEditor /tmp/Xfwm4CompositeEditor-${VERSION}
 cd /tmp/Xfwm4CompositeEditor-${VERSION}
 ./autogen.sh --prefix=/usr
-make clean
+make
 make distclean
+rm -rf autom4te.cache
 cd ..
 tar -czvf Xfwm4CompositeEditor-${VERSION}.tar.gz Xfwm4CompositeEditor-${VERSION}
 rm -r /tmp/Xfwm4CompositeEditor-${VERSION}
